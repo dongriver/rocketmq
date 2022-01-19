@@ -1,6 +1,6 @@
 # 架构设计
 ---
-## 1 技术架构1
+## 1 技术架构
 ![](image/rocketmq_architecture_1.png)
 
 RocketMQ架构上主要分为四部分，如上图所示:

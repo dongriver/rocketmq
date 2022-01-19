@@ -51,6 +51,14 @@ public class NamesrvStartup {
         main0(args);
     }
 
+    /**
+     * 一共分三部分：
+     * ①加在配置
+     * ②初始化，其中初始化多个线程池（细节未知）
+     * ③启动namesrv与broker进行通信，其中定时扫描存活列表，另外强绑定每个broker（细节未知）
+     * @param args
+     * @return
+     */
     public static NamesrvController main0(String[] args) {
 
         try {
