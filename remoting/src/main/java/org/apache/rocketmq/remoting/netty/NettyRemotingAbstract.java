@@ -89,6 +89,7 @@ public abstract class NettyRemotingAbstract {
 
     /**
      * The default request processor to use in case there is no exact match in {@link #processorTable} per request code.
+     * //zdj 在每个请求代码的 {@link #processorTable} 中没有完全匹配的情况下使用的默认请求处理器
      */
     protected Pair<NettyRequestProcessor, ExecutorService> defaultRequestProcessor;
 
@@ -306,6 +307,7 @@ public abstract class NettyRemotingAbstract {
 
     /**
      * Execute callback in callback executor. If callback executor is null, run directly in current thread
+     * //zdj 在回调执行器中执行回调。如果回调执行器为空，则直接在当前线程中运行
      */
     private void executeInvokeCallback(final ResponseFuture responseFuture) {
         boolean runInThisThread = false;
@@ -378,20 +380,21 @@ public abstract class NettyRemotingAbstract {
     /**
      * <p>
      * This method is periodically invoked to scan and expire deprecated request.
+     * //zdj 定期调用此方法来扫描和过期不推荐使用的请求
      * </p>
      */
     public void scanResponseTable() {
         final List<ResponseFuture> rfList = new LinkedList<ResponseFuture>();
-        //@Todo 存活列表？？存入方式？？
+        //zdj @Todo 存活列表？？存入方式？？
         Iterator<Entry<Integer, ResponseFuture>> it = this.responseTable.entrySet().iterator();
         while (it.hasNext()) {
             Entry<Integer, ResponseFuture> next = it.next();
             ResponseFuture rep = next.getValue();
 
-            //@Todo 获取开始时间+超时时间+1s小于当前时间，则移除。120s??
+            //zdj@Todo 获取开始时间+超时时间+1s小于当前时间，则移除。120s??
             if ((rep.getBeginTimestamp() + rep.getTimeoutMillis() + 1000) <= System.currentTimeMillis()) {
-                //@Todo 涉及信号量，带研究，可能用于判断是否存活
-                //@Todo 将返回Future中信号量+1判断是否失活？？
+                //zdj @Todo 涉及信号量，带研究，可能用于判断是否存活
+                //zdj @Todo 将返回Future中信号量+1判断是否失活？？
                 rep.release();
                 it.remove();
                 rfList.add(rep);

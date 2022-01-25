@@ -27,6 +27,7 @@ import org.apache.commons.cli.ParseException;
 public class ServerUtil {
 
     public static Options buildCommandlineOptions(final Options options) {
+        //zdj 详情看docs/cn/sourceCodeText/other_info/Option.md
         Option opt = new Option("h", "help", false, "Print help");
         opt.setRequired(false);
         options.addOption(opt);

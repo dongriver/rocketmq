@@ -1,6 +1,9 @@
 #源码说明文档
-##1、代码入口
-
+##1、概述：官方相关资料
+##2、组成组件
+##3、协作流程图
+##4、功能分类与关键词
+##5、代码入口
  - [namesrv](NamesrvStartup.java)：org.apache.rocketmq.namesrv.NamesrvStartup
  - [broker](BrokerStartup.java)：org.apache.rocketmq.broker.BrokerStartup
  
@@ -19,4 +22,13 @@
  consumer.subscribe("TopicTest", "*");
  // 启动消费者实例 
  consumer.start();
+ 
+###5.1、源码详情
+
+##6、配置属性说明
+##7、场景使用场景
+##8、public项目工具源码
+##9、重复消费涉及相关代码
+##10、写得很好的网址
+https://gitee.com/leopards/RocketMQ
  

@@ -74,14 +74,14 @@ public class NamesrvController {
     }
 
     public boolean initialize() {
-
+        //zdj加载namesrv配置信息-配置文件转String 转json塞入configTable
         this.kvConfigManager.load();
-
+        //zdj@Todo 配置netty参数，待研究
         this.remotingServer = new NettyRemotingServer(this.nettyServerConfig, this.brokerHousekeepingService);
-
+        //zdj@Todo netty连接线程池
         this.remotingExecutor =
                 Executors.newFixedThreadPool(nettyServerConfig.getServerWorkerThreads(), new ThreadFactoryImpl("RemotingExecutorThread_"));
-
+        //zdj注册处理器
         this.registerProcessor();
         //每10s 扫描Broker 移除处于失活broker
         this.scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
@@ -100,6 +100,7 @@ public class NamesrvController {
             }
         }, 1, 10, TimeUnit.MINUTES);
 
+        //zdj ssl安全连接，默认不开启
         if (TlsSystemConfig.tlsMode != TlsMode.DISABLED) {
             // Register a listener to reload SslContext
             try {
@@ -148,14 +149,15 @@ public class NamesrvController {
             this.remotingServer.registerDefaultProcessor(new ClusterTestRequestProcessor(this, namesrvConfig.getProductEnvName()),
                     this.remotingExecutor);
         } else {
-
+            //zdj@Todo 配置 默认连接处理器，使用途径未知
             this.remotingServer.registerDefaultProcessor(new DefaultRequestProcessor(this), this.remotingExecutor);
         }
     }
 
     public void start() throws Exception {
+        //zdj启动netty相关服务
         this.remotingServer.start();
-
+        //zdj文件监听服务（证书），开启ssl才进入
         if (this.fileWatchService != null) {
             this.fileWatchService.start();
         }

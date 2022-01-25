@@ -18,6 +18,7 @@ package org.apache.rocketmq.common;
 
 public class MQVersion {
 
+    //zdj获取枚举对应值排序的序号-这么一个小东西花了时间去看迷糊了- _-
     public static final int CURRENT_VERSION = Version.V4_9_0.ordinal();
 
     public static String getVersionDesc(int value) {

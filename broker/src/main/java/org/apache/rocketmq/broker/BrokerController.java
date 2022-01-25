@@ -232,17 +232,23 @@ public class BrokerController {
     }
 
     public boolean initialize() throws CloneNotSupportedException {
+        //zdj topic配置管理器
         boolean result = this.topicConfigManager.load();
 
+        //zdj 消费偏移管理
         result = result && this.consumerOffsetManager.load();
+        //订阅组管理器
         result = result && this.subscriptionGroupManager.load();
+        //zdj 消费者过滤器管理器
         result = result && this.consumerFilterManager.load();
 
         if (result) {
             try {
+                //zdj 消息存储相关初始化
                 this.messageStore =
                     new DefaultMessageStore(this.messageStoreConfig, this.brokerStatsManager, this.messageArrivingListener,
                         this.brokerConfig);
+                //zdj 多副本commitLog
                 if (messageStoreConfig.isEnableDLegerCommitLog()) {
                     DLedgerRoleChangeHandler roleChangeHandler = new DLedgerRoleChangeHandler(this, (DefaultMessageStore) messageStore);
                     ((DLedgerCommitLog)((DefaultMessageStore) messageStore).getCommitLog()).getdLedgerServer().getdLedgerLeaderElector().addRoleChangeHandler(roleChangeHandler);
@@ -261,6 +267,7 @@ public class BrokerController {
         result = result && this.messageStore.load();
 
         if (result) {
+            //zdj 初始化netty连接相关
             this.remotingServer = new NettyRemotingServer(this.nettyServerConfig, this.clientHousekeepingService);
             NettyServerConfig fastConfig = (NettyServerConfig) this.nettyServerConfig.clone();
             fastConfig.setListenPort(nettyServerConfig.getListenPort() - 2);
@@ -337,6 +344,7 @@ public class BrokerController {
                 @Override
                 public void run() {
                     try {
+                        //zdj 统计数据（可能）
                         BrokerController.this.getBrokerStats().record();
                     } catch (Throwable e) {
                         log.error("schedule record error.", e);
@@ -401,6 +409,7 @@ public class BrokerController {
             }, 1000 * 10, 1000 * 60, TimeUnit.MILLISECONDS);
 
             if (this.brokerConfig.getNamesrvAddr() != null) {
+                //获取namesrv地址
                 this.brokerOuterAPI.updateNameServerAddressList(this.brokerConfig.getNamesrvAddr());
                 log.info("Set user specified name server address: {}", this.brokerConfig.getNamesrvAddr());
             } else if (this.brokerConfig.isFetchNamesrvAddrByAddressServer()) {
@@ -409,6 +418,8 @@ public class BrokerController {
                     @Override
                     public void run() {
                         try {
+                            //zdj 发送Http请求从远端地址服务器获取Name-server地址
+                            //可以在应用运行期间动态调整Name-server地址而不用重启应用
                             BrokerController.this.brokerOuterAPI.fetchNameServerAddr();
                         } catch (Throwable e) {
                             log.error("ScheduledTask fetchNameServerAddr exception", e);
@@ -430,6 +441,7 @@ public class BrokerController {
                         @Override
                         public void run() {
                             try {
+                                //zdj 打印master与slave偏移量差异
                                 BrokerController.this.printMasterAndSlaveDiff();
                             } catch (Throwable e) {
                                 log.error("schedule printMasterAndSlaveDiff error.", e);
@@ -480,7 +492,9 @@ public class BrokerController {
                 }
             }
             initialTransaction();
+            //zdj 用户控制列表
             initialAcl();
+            //zdj @Todo 暂不清楚rpc在其中的作用
             initialRpcHooks();
         }
         return result;

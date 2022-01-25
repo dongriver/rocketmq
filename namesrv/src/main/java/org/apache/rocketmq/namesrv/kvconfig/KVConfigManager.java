@@ -41,6 +41,7 @@ public class KVConfigManager {
         this.namesrvController = namesrvController;
     }
 
+    //zdj 配置文件转String 转json塞入configTable
     public void load() {
         String content = null;
         try {

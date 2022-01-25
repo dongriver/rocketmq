@@ -114,9 +114,12 @@ public class BrokerStartup {
             nettyClientConfig.setUseTLS(Boolean.parseBoolean(System.getProperty(TLS_ENABLE,
                 String.valueOf(TlsSystemConfig.tlsMode == TlsMode.ENFORCING))));
             nettyServerConfig.setListenPort(10911);
+            //zdj 创建消息日志配置对象
             final MessageStoreConfig messageStoreConfig = new MessageStoreConfig();
 
+            //zdj @Todo 实在找不到 getBrokerRole参数是怎么设置进去的，@ImportantField注解 查不到相关代码
             if (BrokerRole.SLAVE == messageStoreConfig.getBrokerRole()) {
+                //访问内存中的消息最大比率,不懂
                 int ratio = messageStoreConfig.getAccessMessageInMemoryMaxRatio() - 10;
                 messageStoreConfig.setAccessMessageInMemoryMaxRatio(ratio);
             }
@@ -147,6 +150,7 @@ public class BrokerStartup {
                 System.exit(-2);
             }
 
+            //zdj 获取所有namesrv地址，向所有namesrv注册
             String namesrvAddr = brokerConfig.getNamesrvAddr();
             if (null != namesrvAddr) {
                 try {
@@ -162,6 +166,7 @@ public class BrokerStartup {
                 }
             }
 
+            //zdj 获取broker角色，再设置brokerId，还是不知道在哪里去setBrokerRole
             switch (messageStoreConfig.getBrokerRole()) {
                 case ASYNC_MASTER:
                 case SYNC_MASTER:
@@ -177,11 +182,11 @@ public class BrokerStartup {
                 default:
                     break;
             }
-
+            //zdj DLedger 多副本 https://www.cnblogs.com/dingwpmz/p/12080372.html
             if (messageStoreConfig.isEnableDLegerCommitLog()) {
                 brokerConfig.setBrokerId(-1);
             }
-
+            //ListenPort默认8888
             messageStoreConfig.setHaListenPort(nettyServerConfig.getListenPort() + 1);
             LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
             JoranConfigurator configurator = new JoranConfigurator();

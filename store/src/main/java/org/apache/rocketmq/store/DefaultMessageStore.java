@@ -275,6 +275,7 @@ public class DefaultMessageStore implements MessageStore {
                 Thread.sleep(1000);
                 log.info("Try to finish doing reput the messages fall behind during the starting, reputOffset={} maxOffset={} behind={}", this.reputMessageService.getReputFromOffset(), this.getMaxPhyOffset(), this.dispatchBehindBytes());
             }
+            //zdj @Todo 恢复主题队列表
             this.recoverTopicQueueTable();
         }
 
@@ -1912,6 +1913,8 @@ public class DefaultMessageStore implements MessageStore {
         }
 
         public long behind() {
+            //最大偏移量
+            //reputFromOffset记录了本次需要拉取的消息在CommitLog中的偏移
             return DefaultMessageStore.this.commitLog.getMaxOffset() - this.reputFromOffset;
         }
 

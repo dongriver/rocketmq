@@ -53,12 +53,13 @@ public class NamesrvStartup {
 
     /**
      * 一共分三部分：
-     * ①加在配置
+     * ①加载配置
      * ②初始化，其中初始化多个线程池（细节未知）
      * ③启动namesrv与broker进行通信，其中定时扫描存活列表，另外强绑定每个broker（细节未知）
      * @param args
      * @return
      */
+    //zdj
     public static NamesrvController main0(String[] args) {
 
         try {
@@ -77,9 +78,11 @@ public class NamesrvStartup {
     }
 
     public static NamesrvController createNamesrvController(String[] args) throws IOException, JoranException {
+        //zdj设置rocketmq.remoting.version远程版本
         System.setProperty(RemotingCommand.REMOTING_VERSION_KEY, Integer.toString(MQVersion.CURRENT_VERSION));
         //PackageConflictDetect.detectFastjson();
 
+        //zdj Option对象用于表示传递给命令行程序的Option
         Options options = ServerUtil.buildCommandlineOptions(new Options());
         commandLine = ServerUtil.parseCmdLine("mqnamesrv", args, buildCommandlineOptions(options), new PosixParser());
         if (null == commandLine) {
@@ -91,6 +94,7 @@ public class NamesrvStartup {
         final NettyServerConfig nettyServerConfig = new NettyServerConfig();
         nettyServerConfig.setListenPort(9876);
         if (commandLine.hasOption('c')) {
+            //zdj configFile
             String file = commandLine.getOptionValue('c');
             if (file != null) {
                 InputStream in = new BufferedInputStream(new FileInputStream(file));
@@ -107,6 +111,7 @@ public class NamesrvStartup {
         }
 
         if (commandLine.hasOption('p')) {
+            //zdj printConfigItem
             InternalLogger console = InternalLoggerFactory.getLogger(LoggerName.NAMESRV_CONSOLE_NAME);
             MixAll.printObjectProperties(console, namesrvConfig);
             MixAll.printObjectProperties(console, nettyServerConfig);
@@ -124,6 +129,7 @@ public class NamesrvStartup {
         JoranConfigurator configurator = new JoranConfigurator();
         configurator.setContext(lc);
         lc.reset();
+        //zdj @Todo 日志配置文件
         configurator.doConfigure(namesrvConfig.getRocketmqHome() + "/conf/logback_namesrv.xml");
 
         log = InternalLoggerFactory.getLogger(LoggerName.NAMESRV_LOGGER_NAME);

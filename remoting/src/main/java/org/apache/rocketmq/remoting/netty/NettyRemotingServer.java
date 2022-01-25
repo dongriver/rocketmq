@@ -182,6 +182,7 @@ public class NettyRemotingServer extends NettyRemotingAbstract implements Remoti
 
     @Override
     public void start() {
+        //zdj 创建耗时的netty工作线程组，默认8个线程
         this.defaultEventExecutorGroup = new DefaultEventExecutorGroup(
                 nettyServerConfig.getServerWorkerThreads(),
                 new ThreadFactory() {
@@ -195,7 +196,7 @@ public class NettyRemotingServer extends NettyRemotingAbstract implements Remoti
                 });
 
         prepareSharableHandlers();
-
+        //zdj netty部分
         ServerBootstrap childHandler =
                 this.serverBootstrap.group(this.eventLoopGroupBoss, this.eventLoopGroupSelector)
                         .channel(useEpoll() ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
@@ -220,13 +221,13 @@ public class NettyRemotingServer extends NettyRemotingAbstract implements Remoti
                                         );
                             }
                         });
-
+        //zdj 默认true
         if (nettyServerConfig.isServerPooledByteBufAllocatorEnable()) {
             childHandler.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
         }
 
         try {
-            //绑定服务器、阻塞等待直到绑定完成
+            //zdj 绑定服务器、阻塞等待直到绑定完成
             ChannelFuture sync = this.serverBootstrap.bind().sync();
             InetSocketAddress addr = (InetSocketAddress) sync.channel().localAddress();
             this.port = addr.getPort();
@@ -237,7 +238,7 @@ public class NettyRemotingServer extends NettyRemotingAbstract implements Remoti
         if (this.channelEventListener != null) {
             this.nettyEventExecutor.start();
         }
-        //@Todo 间隔三秒，每秒定时扫描响应列表进行回调，回调什么？？
+        //zdj @Todo 间隔三秒，每秒定时扫描响应列表进行回调，回调什么？？需关联broker来研究其中逻辑
         this.timer.scheduleAtFixedRate(new TimerTask() {
 
             @Override
