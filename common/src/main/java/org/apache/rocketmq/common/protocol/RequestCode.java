@@ -17,8 +17,12 @@
 
 package org.apache.rocketmq.common.protocol;
 
+/**
+ * 消息的相关配置枚举
+ */
 public class RequestCode {
 
+    //zdj 消息头的code
     public static final int SEND_MESSAGE = 10;
 
     public static final int PULL_MESSAGE = 11;

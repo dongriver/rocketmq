@@ -155,6 +155,8 @@ public class BrokerConfig {
     /**
      * This configurable item defines interval of topics registration of broker to name server. Allowing values are
      * between 10, 000 and 60, 000 milliseconds.
+     * 此可配置项定义代理主题注册到名称服务器的时间间隔。允许的值是介于 10, 000 和 60, 000 毫秒之间。
+     *
      */
     private int registerNameServerPeriod = 1000 * 30;
 
