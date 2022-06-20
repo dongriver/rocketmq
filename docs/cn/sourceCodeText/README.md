@@ -29,6 +29,10 @@
  // 启动消费者实例 
  consumer.start();
  
+ 
+ - [DLedger 容灾自动选主]
+ https://cloud.tencent.com/developer/article/1909981
+ 
 ###5.1、源码详情
 
 ##6、配置属性说明
