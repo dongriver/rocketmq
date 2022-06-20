@@ -18,4 +18,5 @@ brokerRole   :ASYNC_MASTER、 SYNC_MASTER、SLAVE
 
 消息发送的流程 https://zhuanlan.zhihu.com/p/388924792
 重复消费：https://blog.csdn.net/weixin_41047933/article/details/87865920
+##test
 
